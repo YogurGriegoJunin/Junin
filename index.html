@@ -191,3 +191,40 @@ Pedir por WhatsApp
 
 </body>
 </html>
+<!-- BOTÓN FLOTANTE WHATSAPP -->
+<style>
+.whatsapp-float{
+position:fixed;
+width:65px;
+height:65px;
+bottom:20px;
+right:20px;
+background:#25D366;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 8px 20px rgba(0,0,0,0.25);
+z-index:999;
+animation:pulse 2s infinite;
+text-decoration:none;
+}
+
+.whatsapp-float img{
+width:35px;
+height:35px;
+}
+
+@keyframes pulse{
+0%{box-shadow:0 0 0 0 rgba(37,211,102,0.7);}
+70%{box-shadow:0 0 0 15px rgba(37,211,102,0);}
+100%{box-shadow:0 0 0 0 rgba(37,211,102,0);}
+}
+</style>
+
+<a class="whatsapp-float"
+href="https://wa.me/5492364206562?text=Hola%20quiero%20hacer%20mi%20pedido%20de%20Yogur%20Griego"
+target="_blank">
+<img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
+</a>
+</body>
