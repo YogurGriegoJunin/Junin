@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Recorrido Yogur Griego - Junín</title>
+    
+    <!-- Configuración PWA / Android -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2921/2921820.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2921/2921820.png">
+
+    <!-- Estilos y Mapas -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <style>
+        :root { --safe-top: env(safe-area-inset-top); }
+        body { -webkit-tap-highlight-color: transparent; }
+        #map { height: 45vh; width: 100%; border-radius: 1rem; position: relative; z-index: 1; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        .app-container { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .content-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+
+        /* Estilo para el modal de ayuda */
+        #help-modal { z-index: 9999; display: none; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900 overflow-hidden">
+
+    <div class="app-container">
+        <!-- Encabezado -->
+        <header class="bg-blue-700 text-white p-4 pt-6 shadow-lg shrink-0">
+            <div class="max-w-4xl mx-auto flex justify-between items-center">
+                <div>
+                    <h1 class="text-xl font-bold">Yogur Griego Junín</h1>
+                    <p class="text-[10px] opacity-80 uppercase tracking-widest">Recorrido Inteligente</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="toggleHelp()" class="bg-white/10 hover:bg-white/20 text-white p-2 rounded-full border border-white/20 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                    </button>
+                    <button id="install-btn" class="hidden bg-white text-blue-700 text-xs px-4 py-1.5 rounded-full font-bold shadow-md">
+                        Instalar App
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-scroll">
+            <div class="max-w-4xl mx-auto p-4 space-y-4 pb-24">
+                
+                <!-- Buscador de direcciones -->
+                <div class="bg-white p-4 rounded-2xl shadow-md border border-slate-100 space-y-3">
+                    <div class="flex gap-2">
+                        <input type="text" id="address-input" placeholder="Ej: Saavedra 123 o Rivadavia y Libertad" class="flex-1 px-4 py-3 bg-slate-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <button onclick="searchAddress()" class="bg-blue-600 text-white p-3 rounded-xl shadow-blue-200 shadow-lg active:scale-95">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        </button>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="setSearchAsOrigin()" class="flex-1 bg-slate-100 text-slate-700 py-2 rounded-lg text-[11px] font-bold uppercase">Setear Inicio</button>
+                        <button onclick="optimizeRoute()" class="flex-1 bg-green-600 text-white py-2 rounded-lg text-[11px] font-bold uppercase shadow-md active:scale-95">Optimizar</button>
+                    </div>
+                </div>
+
+                <!-- Punto de Inicio Actual -->
+                <div id="origin-box" class="hidden bg-blue-50 border border-blue-100 p-3 rounded-xl flex items-center justify-between animate-fade-in">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span id="origin-display-text" class="text-xs font-bold text-blue-800 truncate">Inicio: Seleccionado</span>
+                    </div>
+                    <button onclick="clearOrigin()" class="text-blue-400 hover:text-red-500 p-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                </div>
+
+                <!-- Mapa interactivo -->
+                <div id="map" class="shadow-xl border-4 border-white"></div>
+
+                <!-- Información de la Ruta Calculada -->
+                <div id="distance-info" class="hidden bg-blue-600 text-white p-4 rounded-2xl flex items-center justify-between animate-fade-in">
+                    <div>
+                        <p class="text-[10px] opacity-80 font-bold uppercase">Distancia Total</p>
+                        <p id="total-distance" class="text-2xl font-black">0 km</p>
+                    </div>
+                    <button onclick="openInGoogleMaps()" class="bg-white text-blue-700 px-4 py-2 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8Z"/><circle cx="12" cy="10" r="3"/></svg>
+                        Ir a Maps
+                    </button>
+                </div>
+
+                <!-- Lista de paradas de entrega -->
+                <div class="bg-white rounded-2xl shadow-md border border-slate-100 p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="font-bold text-slate-800">Paradas (<span id="stop-count">0</span>)</h2>
+                        <button onclick="clearStops()" class="text-xs text-red-500 font-bold">BORRAR TODO</button>
+                    </div>
+                    <ul id="stops-list" class="space-y-3">
+                        <!-- Aquí se inyectan las paradas dinámicamente -->
+                    </ul>
+                    <div id="empty-state" class="py-8 text-center">
+                        <p class="text-slate-400 text-xs">No has añadido direcciones aún.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de estado inferior -->
+        <div class="shrink-0 bg-white border-t border-slate-200 p-3 px-6 flex items-center justify-between safe-area-bottom">
+            <div class="flex flex-col">
+                <span class="text-[9px] font-bold text-slate-400 uppercase">Estado</span>
+                <span id="route-status" class="text-xs font-medium text-slate-700 truncate max-w-[200px]">Esperando dirección...</span>
+            </div>
+            <div id="origin-indicator" class="hidden flex items-center gap-2 text-blue-600">
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
+                <span class="text-[10px] font-bold uppercase text-blue-600">Inicio Listo</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Ayuda para Instalación -->
+    <div id="help-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden animate-fade-in shadow-2xl">
+            <div class="bg-blue-600 p-6 text-white text-center">
+                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                </div>
+                <h3 class="font-bold text-lg">Guía de Instalación</h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-sm text-slate-600 leading-relaxed text-center">
+                    Si no ves el botón de instalar, sigue estos pasos manuales en Chrome:
+                </p>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 text-sm">
+                        <span class="bg-blue-100 text-blue-700 font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">1</span>
+                        <p>Toca los <b>3 puntos</b> ⋮ arriba a la derecha.</p>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm">
+                        <span class="bg-blue-100 text-blue-700 font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">2</span>
+                        <p>Busca <b>"Instalar aplicación"</b> o <b>"Añadir a pantalla de inicio"</b>.</p>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm">
+                        <span class="bg-blue-100 text-blue-700 font-bold w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">3</span>
+                        <p>Confirma y ¡listo!</p>
+                    </div>
+                </div>
+                <button onclick="toggleHelp()" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold mt-4 shadow-lg active:scale-95 transition-all">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- MANEJO DE PWA ---
+        function toggleHelp() {
+            const modal = document.getElementById('help-modal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        (function initPWA() {
+            try {
+                const manifest = {
+                    "name": "Recorrido Yogur Griego Junín",
+                    "short_name": "YogurJunin",
+                    "start_url": ".",
+                    "display": "standalone",
+                    "background_color": "#f8fafc",
+                    "theme_color": "#2563eb",
+                    "icons": [{
+                        "src": "https://cdn-icons-png.flaticon.com/512/2921/2921820.png",
+                        "sizes": "512x512",
+                        "type": "image/png",
+                        "purpose": "any maskable"
+                    }]
+                };
+                const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+                const manifestURL = URL.createObjectURL(manifestBlob);
+                const manifestLink = document.createElement('link');
+                manifestLink.rel = 'manifest';
+                manifestLink.href = manifestURL;
+                document.head.appendChild(manifestLink);
+            } catch (e) { console.warn("PWA: No se pudo generar el manifiesto dinámico."); }
+        })();
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btn = document.getElementById('install-btn');
+            if (btn) btn.classList.remove('hidden');
+        });
+
+        const btnInstall = document.getElementById('install-btn');
+        if (btnInstall) {
+            btnInstall.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') btnInstall.classList.add('hidden');
+                    deferredPrompt = null;
+                } else {
+                    toggleHelp();
+                }
+            });
+        }
+
+        // --- LÓGICA DE MAPAS Y RUTAS ---
+        const JUNIN_COORDS = [-34.585, -60.948];
+        const CITY_SUFFIX = ", Junín, Buenos Aires, Argentina";
+        let map, originMarker = null, routeLine = null;
+        let stops = [], origin = null;
+
+        function initMap() {
+            try {
+                map = L.map('map', { zoomControl: false }).setView(JUNIN_COORDS, 14);
+                
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; CARTO',
+                    subdomains: 'abcd',
+                    maxZoom: 20
+                }).addTo(map);
+
+                L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+                map.on('click', (e) => addStop(e.latlng));
+                map.on('contextmenu', (e) => setOrigin(e.latlng));
+
+                const input = document.getElementById('address-input');
+                if (input) {
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') searchAddress();
+                    });
+                }
+            } catch (err) { console.error("Error mapa:", err); }
+        }
+
+        async function searchAddress(asOrigin = false) {
+            let query = document.getElementById('address-input').value.trim();
+            if (!query) return;
+
+            updateStatus("Buscando...");
+
+            const entreRegex = /(.+)\s+entre\s+(.+)\s+(?:y|e)\s+(.+)/i;
+            const match = query.match(entreRegex);
+
+            if (match) {
+                const coord1 = await fetchCoord(`${match[1].trim()} & ${match[2].trim()}`);
+                const coord2 = await fetchCoord(`${match[1].trim()} & ${match[3].trim()}`);
+                if (coord1 && coord2) {
+                    const mid = { lat: (coord1.lat + coord2.lat) / 2, lng: (coord1.lng + coord2.lng) / 2 };
+                    processResult(mid, query, asOrigin);
+                    return;
+                }
+            }
+
+            const res = await fetchCoord(query.toLowerCase().replace(/\s+(y|esquina|e)\s+/g, ' & '));
+            if (res) processResult(res, query, asOrigin);
+            else { showToast("No encontrado"); updateStatus("Sin resultados."); }
+        }
+
+        async function fetchCoord(q) {
+            try {
+                const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q + CITY_SUFFIX)}&limit=1`);
+                const d = await r.json();
+                return d[0] ? { lat: parseFloat(d[0].lat), lng: parseFloat(d[0].lon) } : null;
+            } catch (e) { return null; }
+        }
+
+        function processResult(latlng, label, asOrigin) {
+            map.flyTo(latlng, 16);
+            if (asOrigin) setOrigin(latlng, label);
+            else addStop(latlng, label);
+            document.getElementById('address-input').value = '';
+            updateStatus("Ubicado: " + label);
+        }
+
+        function setSearchAsOrigin() { searchAddress(true); }
+
+        function setOrigin(latlng, label = null) {
+            if (originMarker) map.removeLayer(originMarker);
+            origin = latlng;
+            originMarker = L.marker(latlng, {
+                icon: L.icon({
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                    iconSize: [25, 41], iconAnchor: [12, 41]
+                })
+            }).addTo(map).bindPopup("<b>Inicio</b>").openPopup();
+            
+            document.getElementById('origin-box').classList.remove('hidden');
+            document.getElementById('origin-display-text').innerText = "Inicio: " + (label || "Marcado en mapa");
+            document.getElementById('origin-indicator').classList.remove('hidden');
+            if (routeLine) map.removeLayer(routeLine);
+            updateRouteUI();
+        }
+
+        function clearOrigin() {
+            if (originMarker) map.removeLayer(originMarker);
+            origin = null; originMarker = null;
+            document.getElementById('origin-box').classList.add('hidden');
+            document.getElementById('origin-indicator').classList.add('hidden');
+            if (routeLine) map.removeLayer(routeLine);
+            updateRouteUI();
+        }
+
+        function addStop(latlng, label = null) {
+            const marker = L.marker(latlng).addTo(map);
+            stops.push({ id: Date.now(), lat: latlng.lat, lng: latlng.lng, label: label || `Punto ${stops.length + 1}`, marker });
+            if (routeLine) map.removeLayer(routeLine);
+            updateStopsList();
+            updateRouteUI();
+        }
+
+        function removeStop(id) {
+            const idx = stops.findIndex(s => s.id === id);
+            if (idx !== -1) {
+                map.removeLayer(stops[idx].marker);
+                stops.splice(idx, 1);
+                if (routeLine) map.removeLayer(routeLine);
+                updateStopsList();
+                updateRouteUI();
+            }
+        }
+
+        function clearStops() {
+            stops.forEach(s => map.removeLayer(s.marker));
+            stops = [];
+            if (routeLine) map.removeLayer(routeLine);
+            updateStopsList();
+            updateRouteUI();
+        }
+
+        function updateStopsList() {
+            const list = document.getElementById('stops-list');
+            const empty = document.getElementById('empty-state');
+            document.getElementById('stop-count').innerText = stops.length;
+            list.innerHTML = '';
+            if (empty) empty.style.display = stops.length ? 'none' : 'block';
+
+            stops.forEach((stop, index) => {
+                const li = document.createElement('li');
+                li.className = "flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 shadow-sm animate-fade-in";
+                li.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <span class="shrink-0 w-6 h-6 bg-blue-600 text-white text-[10px] rounded-full flex items-center justify-center font-bold">${index + 1}</span>
+                        <span class="text-xs font-bold truncate text-slate-700">${stop.label}</span>
+                    </div>
+                    <button onclick="removeStop(${stop.id})" class="text-slate-400 p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    </button>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function optimizeRoute() {
+            if (!origin) { showToast("Falta punto de inicio"); return; }
+            if (stops.length < 1) { showToast("Agregue paradas"); return; }
+
+            let unvisited = [...stops], ordered = [], current = origin;
+            while (unvisited.length > 0) {
+                let nearestIdx = 0, minDist = Infinity;
+                unvisited.forEach((s, i) => {
+                    const d = Math.sqrt((current.lat - s.lat)**2 + (current.lng - s.lng)**2);
+                    if (d < minDist) { minDist = d; nearestIdx = i; }
+                });
+                ordered.push(unvisited[nearestIdx]);
+                current = unvisited[nearestIdx];
+                unvisited.splice(nearestIdx, 1);
+            }
+            stops = ordered;
+            updateStopsList();
+            drawRoute();
+        }
+
+        function drawRoute() {
+            if (routeLine) map.removeLayer(routeLine);
+            const pts = [[origin.lat, origin.lng], ...stops.map(s => [s.lat, s.lng])];
+            routeLine = L.polyline(pts, { color: '#2563eb', weight: 5, opacity: 0.6, dashArray: '8, 12' }).addTo(map);
+            map.fitBounds(routeLine.getBounds(), { padding: [30, 30] });
+            updateRouteUI(true);
+        }
+
+        function updateRouteUI(isCalc = false) {
+            const div = document.getElementById('distance-info');
+            if (isCalc && div) {
+                div.classList.remove('hidden');
+                let t = 0; const p = [origin, ...stops];
+                for(let i=0; i<p.length-1; i++) {
+                    const R=6371; 
+                    const dLat=(p[i+1].lat-p[i].lat)*Math.PI/180; 
+                    const dLon=(p[i+1].lng-p[i].lng)*Math.PI/180;
+                    const a=Math.sin(dLat/2)**2 + Math.cos(p[i].lat*Math.PI/180)*Math.cos(p[i+1].lat*Math.PI/180)*Math.sin(dLon/2)**2;
+                    t += R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                }
+                document.getElementById('total-distance').innerText = t.toFixed(2) + " km";
+            } else if (div) div.classList.add('hidden');
+        }
+
+        function openInGoogleMaps() {
+            if (!origin || !stops.length) return;
+            const url = `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${stops[stops.length-1].lat},${stops[stops.length-1].lng}&waypoints=${stops.slice(0,-1).map(s=>`${s.lat},${s.lng}`).join('|')}&travelmode=driving`;
+            window.open(url, '_blank');
+        }
+
+        function updateStatus(m) { document.getElementById('route-status').innerText = m; }
+        function showToast(m) {
+            const t = document.createElement('div');
+            t.className = "fixed bottom-24 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-2 rounded-full text-xs font-bold z-[5000] animate-fade-in";
+            t.innerText = m;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2500);
+        }
+
+        window.onload = initMap;
+    </script>
+</body>
+</html>
