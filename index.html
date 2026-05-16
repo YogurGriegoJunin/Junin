@@ -31,7 +31,7 @@
         header { 
             background: var(--verde); 
             color: white; 
-            padding: 50px 20px; 
+            padding: 55px 20px; 
             text-align: center; 
         }
         header h1 { margin: 0; font-size: 38px; font-weight: bold; }
@@ -55,18 +55,19 @@
         .card:hover { transform: translateY(-6px); }
         .card img { width: 100%; height: 230px; object-fit: cover; }
         
-        /* Etiqueta para la promo retornable */
+        /* Etiqueta distintiva para la opción retornable */
         .badge {
             position: absolute;
             top: 15px;
             right: 15px;
             background: var(--verde-oscuro);
             color: white;
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: bold;
             text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
         
         .card-content { padding: 25px; }
@@ -91,13 +92,13 @@
         .instagram { background: var(--instagram); color: white; margin: 15px auto; max-width: 340px; }
         .facebook { background: var(--facebook); color: white; margin: 15px auto; max-width: 340px; }
         
-        /* BENEFICIOS Y TARGET */
+        /* SECCIONES DE INFORMACIÓN */
         .benefits-grid, .target-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; max-width: 1000px; margin: 0 auto; }
         .benefit-card, .target-card { background: white; width: 290px; padding: 25px; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); text-align: left; }
         .benefit-card h3, .target-card h3 { margin-top: 0; color: var(--verde-oscuro); font-size: 20px; margin-bottom: 10px; }
         .benefit-card p, .target-card p { font-size: 16px; color: var(--texto-secundario); margin: 0; }
         
-        /* REVIEWS */
+        /* TESTIMONIOS PULIDOS */
         .reviews-container { max-width: 750px; margin: 0 auto; }
         .review { background: white; padding: 22px; margin: 20px 0; border-radius: 14px; box-shadow: 0 6px 15px rgba(0,0,0,0.05); text-align: left; }
         .stars { color: #ffbc00; font-size: 18px; margin-bottom: 8px; }
@@ -105,7 +106,7 @@
         
         footer { margin-top: 50px; padding: 35px; font-size: 15px; color: var(--texto-secundario); text-align: center; background: #ffffff; border-top: 1px solid #e0e0e0; }
         
-        /* BOTÓN FLOTANTE */
+        /* BOTÓN FLOTANTE DE WHATSAPP */
         .whatsapp-float { 
             position: fixed; 
             width: 68px; 
@@ -146,9 +147,12 @@
 </header>
 
 <main>
+    <!-- SECCIÓN DE PROMOCIONES -->
     <section class="section">
         <h2>Promociones disponibles</h2>
         <div class="promos">
+            
+            <!-- Promo 1: Envases Incluidos -->
             <article class="card">
                 <img src="frascos.jpg" alt="Yogur griego artesanal en frascos de vidrio en Junín" loading="lazy">
                 <div class="card-content">
@@ -159,6 +163,7 @@
                 </div>
             </article>
 
+            <!-- Promo 2: Retornables (Con insignia destacada) -->
             <article class="card">
                 <span class="badge">Ahorro Ecológico</span>
                 <img src="frascos.jpg" alt="Yogur griego artesanal en envases retornables en Junín" loading="lazy">
@@ -170,9 +175,11 @@
                     <a class="btn whatsapp" href="https://wa.me/5492364206562?text=Hola%20quiero%20la%20promo%20retornable%20$14.000" target="_blank">Quiero esta promo</a>
                 </div>
             </article>
+            
         </div>
     </section>
 
+    <!-- SECCIÓN BENEFICIOS -->
     <section class="section">
         <h2>Beneficios reales del Yogur Griego</h2>
         <div class="benefits-grid">
@@ -184,6 +191,7 @@
         </div>
     </section>
 
+    <!-- SECCIÓN PÚBLICO OBJETIVO -->
     <section class="section">
         <h2>¿Para quién es este yogur?</h2>
         <div class="target-grid">
@@ -194,6 +202,7 @@
         </div>
     </section>
 
+    <!-- SECCIÓN OPINIONES -->
     <section class="section">
         <h2>Opiniones reales de clientes</h2>
         <div class="reviews-container">
@@ -212,6 +221,7 @@
         </div>
     </section>
 
+    <!-- SECCIÓN REDES SOCIALES -->
     <section class="section">
         <h2>Seguinos en redes</h2>
         <a class="btn instagram" href="https://instagram.com/yogur.griego.junin" target="_blank">Ver Instagram</a>
@@ -221,8 +231,8 @@
 
 <footer>📍 Junín, Provincia de Buenos Aires — Producción artesanal diaria</footer>
 
+<!-- BOTÓN FLOTANTE -->
 <a class="whatsapp-float" href="https://wa.me/5492364206562?text=Hola%20quiero%20hacer%20mi%20pedido%20de%20Yogur%20Griego" target="_blank" aria-label="Enviar mensaje por WhatsApp">
-    <!-- Nota: Te recomiendo guardar la imagen del icono en tu carpeta local para evitar enlaces rotos del CDN -->
     <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
 </a>
 
