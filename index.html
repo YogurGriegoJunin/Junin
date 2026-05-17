@@ -19,6 +19,7 @@
             --facebook: #3b5998;
             --texto-principal: #1a1a1a;
             --texto-secundario: #333333;
+            --oro: #ffbc00;
         }
         
         * { box-sizing: border-box; }
@@ -34,14 +35,14 @@
         header { 
             background: var(--verde); 
             color: white; 
-            padding: 55px 20px; 
+            padding: 60px 20px; 
             text-align: center; 
         }
-        header h1 { margin: 0; font-size: 38px; font-weight: bold; }
-        header p { margin-top: 12px; font-size: 18px; opacity: 0.95; font-weight: 500; }
+        header h1 { margin: 0; font-size: 42px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        header p { margin-top: 12px; font-size: 19px; opacity: 0.95; font-weight: 500; }
         
         .section { padding: 50px 20px; text-align: center; max-width: 1200px; margin: 0 auto; }
-        .section h2 { margin-bottom: 35px; font-size: 28px; color: var(--verde-oscuro); }
+        .section h2 { margin-bottom: 35px; font-size: 30px; color: var(--verde-oscuro); font-weight: bold; }
         
         .promos { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
         
@@ -49,14 +50,14 @@
             background: white; 
             width: 340px; 
             border-radius: 16px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08); 
             overflow: hidden; 
             text-align: left; 
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             position: relative;
         }
-        .card:hover { transform: translateY(-6px); }
-        .card img { width: 100%; height: 230px; object-fit: cover; }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.12); }
+        .card img { width: 100%; height: 240px; object-fit: cover; }
         
         /* Etiqueta distintiva para la opción retornable */
         .badge {
@@ -71,12 +72,19 @@
             font-weight: bold;
             text-transform: uppercase;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            z-index: 10;
         }
         
         .card-content { padding: 25px; }
-        .card h3 { margin: 0 0 12px 0; font-size: 21px; color: var(--texto-principal); }
-        .price { font-size: 32px; color: var(--verde); font-weight: bold; margin-bottom: 12px; }
+        .card h3 { margin: 0 0 8px 0; font-size: 22px; color: var(--texto-principal); font-weight: bold; }
+        
+        /* Precios con efecto anclaje (Antes vs Ahora) */
+        .price-container { margin-bottom: 12px; }
+        .price-before { font-size: 16px; color: #888; text-decoration: line-through; margin-bottom: 2px; font-weight: 500; }
+        .price { font-size: 34px; color: var(--verde); font-weight: bold; line-height: 1; }
+        
         .card p { margin: 8px 0; font-size: 16px; color: var(--texto-secundario); }
+        .payment-methods { font-size: 14px !important; color: var(--verde) !important; font-weight: bold; margin-top: 4px; }
         
         .btn { 
             display: block; 
@@ -88,12 +96,25 @@
             margin-top: 20px; 
             font-size: 16px;
             transition: 0.2s ease; 
+            box-shadow: 0 4px 12px rgba(37,211,102,0.2);
         }
-        .btn:hover { opacity: 0.9; transform: scale(1.02); }
+        .btn:hover { opacity: 0.95; transform: scale(1.02); box-shadow: 0 6px 16px rgba(37,211,102,0.3); }
         .whatsapp { background: var(--whatsapp); color: white; }
         
-        .instagram { background: var(--instagram); color: white; margin: 15px auto; max-width: 340px; }
-        .facebook { background: var(--facebook); color: white; margin: 15px auto; max-width: 340px; }
+        /* BANNER DE COMPROMISO DE CALIDAD */
+        .garantia-banner {
+            background: linear-gradient(135deg, var(--verde-oscuro), var(--verde));
+            color: white;
+            padding: 40px 20px;
+            margin: 40px 0;
+            border-radius: 0;
+            text-align: center;
+        }
+        .garantia-banner h3 { margin: 0 0 10px 0; font-size: 24px; font-weight: bold; }
+        .garantia-banner p { margin: 0; font-size: 17px; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+        
+        .instagram { background: var(--instagram); color: white; margin: 15px auto; max-width: 340px; box-shadow: 0 4px 12px rgba(225,48,108,0.2); }
+        .facebook { background: var(--facebook); color: white; margin: 15px auto; max-width: 340px; box-shadow: 0 4px 12px rgba(59,89,152,0.2); }
         
         /* SECCIONES DE INFORMACIÓN */
         .benefits-grid, .target-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; max-width: 1000px; margin: 0 auto; }
@@ -103,8 +124,8 @@
         
         /* TESTIMONIOS PULIDOS */
         .reviews-container { max-width: 750px; margin: 0 auto; }
-        .review { background: white; padding: 22px; margin: 20px 0; border-radius: 14px; box-shadow: 0 6px 15px rgba(0,0,0,0.05); text-align: left; }
-        .stars { color: #ffbc00; font-size: 18px; margin-bottom: 8px; }
+        .review { background: white; padding: 22px; margin: 20px 0; border-radius: 14px; box-shadow: 0 6px 15px rgba(0,0,0,0.05); text-align: left; border-left: 5px solid var(--verde); }
+        .stars { color: var(--oro); font-size: 18px; margin-bottom: 8px; }
         .review-text { font-size: 16px; color: var(--texto-principal); font-style: italic; }
         
         footer { margin-top: 50px; padding: 35px; font-size: 15px; color: var(--texto-secundario); text-align: center; background: #ffffff; border-top: 1px solid #e0e0e0; }
@@ -135,8 +156,8 @@
         }
         
         @media(max-width: 680px) {
-            header h1 { font-size: 30px; }
-            header p { font-size: 16px; }
+            header h1 { font-size: 34px; }
+            header p { font-size: 17px; }
             .promos, .benefits-grid, .target-grid { flex-direction: column; align-items: center; }
             .card, .benefit-card, .target-card { width: 100%; max-width: 360px; }
         }
@@ -146,23 +167,28 @@
 
 <header>
     <h1>Yogur Griego Junín</h1>
-    <p>100% Natural • Sin azúcar • Alto en proteína • Entrega sin cargo en Junín</p>
+    <p>100% Artesanal • Sin Azúcar • Sin Conservantes • Entrega Sin Cargo</p>
 </header>
 
 <main>
     <!-- SECCIÓN DE PROMOCIONES -->
     <section class="section">
-        <h2>Promociones disponibles</h2>
+        <h2>Aprovechá las Promociones de la Semana</h2>
         <div class="promos">
             
             <!-- Promo 1: Envases Incluidos -->
             <article class="card">
                 <img src="frascos.jpg" alt="Yogur griego artesanal en frascos de vidrio en Junín" loading="lazy">
                 <div class="card-content">
-                    <h3>2 potes 390g - Envases incluidos</h3>
-                    <div class="price">$18.000</div>
-                    <p>Entrega sin cargo dentro de Junín.</p>
-                    <a class="btn whatsapp" href="https://wa.me/5492364206562?text=Hola%20quiero%20la%20promo%20de%202%20potes%20$18.000" target="_blank">Pedir ahora por WhatsApp</a>
+                    <h3>Pack 2 Potes (390g c/u)<br><span style="font-size:16px; font-weight:normal; color:#666;">Envases de vidrio incluidos</span></h3>
+                    <div class="price-container">
+                        <div class="price-before">Precio regular: $21.000</div>
+                        <div class="price">$18.000</div>
+                    </div>
+                    <p>Ideal para stockear tu heladera con salud.</p>
+                    <p>Entrega sin cargo en Junín.</p>
+                    <p class="payment-methods">Efectivo • Cuenta DNI • Mercado Pago</p>
+                    <a class="btn whatsapp" href="https://wa.me/5492364206562?text=Hola%20quiero%20aprovechar%20la%20promo%20de%202%20potes%20con%20envase%20por%20$18.000" target="_blank">Reservar Promo por WhatsApp</a>
                 </div>
             </article>
 
@@ -171,71 +197,81 @@
                 <span class="badge">Ahorro Ecológico</span>
                 <img src="frascos.jpg" alt="Yogur griego artesanal en envases retornables en Junín" loading="lazy">
                 <div class="card-content">
-                    <h3>2 potes 390g - Envases retornables</h3>
-                    <div class="price">$16.000</div>
-                    <p>Devolvés los frascos y pagás menos.</p>
-                    <p>Entrega sin cargo dentro de Junín.</p>
-                    <a class="btn whatsapp" href="https://wa.me/5492364206562?text=Hola%20quiero%20la%20promo%20retornable%20$16.000" target="_blank">Quiero esta promo</a>
+                    <h3>Pack 2 Potes (390g c/u)<br><span style="font-size:16px; font-weight:normal; color:#666;">Trayendo tus envases vacíos</span></h3>
+                    <div class="price-container">
+                        <div class="price-before">Precio de lista: $19.000</div>
+                        <div class="price">$16.000</div>
+                    </div>
+                    <p>Devolvés los frascos anteriores y pagás menos.</p>
+                    <p>Entrega sin cargo en Junín.</p>
+                    <p class="payment-methods">Efectivo • Cuenta DNI • Mercado Pago</p>
+                    <a class="btn whatsapp" href="https://wa.me/5492364206562?text=Hola%20quiero%20la%20promo%20retornable%20de%202%20potes%20por%20$16.000" target="_blank">Quiero el Descuento Retornable</a>
                 </div>
             </article>
             
         </div>
     </section>
 
+    <!-- BANNER DE COMPROMISO DE CALIDAD -->
+    <div class="garantia-banner">
+        <h3>Calidad de Verdad, Sin Secretos</h3>
+        <p>Filtrado artesanalmente para lograr una textura increíblemente espesa y cremosa. Sin una sola gota de azúcar, almidones, gelatinas ni conservantes artificiales. Alimento puro para tu bienestar digestivo.</p>
+    </div>
+
     <!-- SECCIÓN BENEFICIOS -->
     <section class="section">
-        <h2>Beneficios reales del Yogur Griego</h2>
+        <h2>¿Por qué elegir nuestro Yogur Griego?</h2>
         <div class="benefits-grid">
-            <div class="benefit-card"><h3>Alto en proteína</h3><p>Mayor saciedad y apoyo al mantenimiento muscular.</p></div>
-            <div class="benefit-card"><h3>Sin azúcar agregada</h3><p>No genera picos de glucosa. Ideal para alimentación consciente.</p></div>
-            <div class="benefit-card"><h3>Textura espesa natural</h3><p>Filtrado artesanal que concentra nutrientes.</p></div>
-            <div class="benefit-card"><h3>Fermentos naturales</h3><p>Favorecen el equilibrio digestivo.</p></div>
-            <div class="benefit-card"><h3>Producción local en Junín</h3><p>Elaboración diaria con entrega directa.</p></div>
+            <div class="benefit-card"><h3>Alto en proteína natural</h3><p>Mayor saciedad por más tiempo y excelente apoyo muscular.</p></div>
+            <div class="benefit-card"><h3>Cero azúcar agregada</h3><p>Mantiene estables tus niveles de glucosa. Apto para alimentación consciente.</p></div>
+            <div class="benefit-card"><h3>Textura cremosa real</h3><p>Lograda puramente mediante el método tradicional de filtrado de suero.</p></div>
+            <div class="benefit-card"><h3>Probióticos activos</h3><p>Fermentos naturales vivos que cuidan y equilibran tu salud intestinal.</p></div>
+            <div class="benefit-card"><h3>Frescura Local</h3><p>Elaboración diaria directo de nuestra producción en Junín a tu mesa.</p></div>
         </div>
     </section>
 
     <!-- SECCIÓN PÚBLICO OBJETIVO -->
     <section class="section">
-        <h2>¿Para quién es este yogur?</h2>
+        <h2>Un aliado perfecto para:</h2>
         <div class="target-grid">
-            <div class="target-card"><h3>Personas fitness</h3><p>Fuente proteica natural para desayuno o post entrenamiento.</p></div>
-            <div class="target-card"><h3>Quienes buscan comer mejor</h3><p>Sin ultraprocesados ni azúcar agregada.</p></div>
-            <div class="target-card"><h3>Familias conscientes</h3><p>Alternativa más natural frente a productos industriales.</p></div>
-            <div class="target-card"><h3>Amantes de lo artesanal</h3><p>Producto local en frascos de vidrio retornables.</p></div>
+            <div class="target-card"><h3>Estilo de vida activo</h3><p>La recarga proteica ideal para tus desayunos, meriendas o post-entrenamiento.</p></div>
+            <div class="target-card"><h3>Alimentación limpia</h3><p>Quienes buscan eliminar de su día los ultraprocesados y aditivos industriales.</p></div>
+            <div class="target-card"><h3>Toda la familia</h3><p>Una alternativa deliciosa, nutritiva y honesta para cuidar a los que más querés.</p></div>
+            <div class="target-card"><h3>Consumo sustentable</h3><p>Apoyo a la producción local minimizando residuos con frascos retornables.</p></div>
         </div>
     </section>
 
     <!-- SECCIÓN OPINIONES -->
     <section class="section">
-        <h2>Opiniones reales de clientes</h2>
+        <h2>Lo que dicen nuestros clientes</h2>
         <div class="reviews-container">
             <div class="review">
                 <div class="stars">⭐⭐⭐⭐⭐</div>
-                <div class="review-text">"Excelente calidad, textura cremosa y sabor natural."</div>
+                <div class="review-text">"Excelente calidad, textura súper cremosa y el sabor natural es exquisito. No se compara con ninguno de supermercado."</div>
             </div>
             <div class="review">
                 <div class="stars">⭐⭐⭐⭐⭐</div>
-                <div class="review-text">"El mejor yogur griego de Junín. Atención rápida y entrega puntual."</div>
+                <div class="review-text">"El mejor yogur griego de Junín. La atención por WhatsApp es impecable, súper rápida y el reparto llega siempre a tiempo."</div>
             </div>
             <div class="review">
                 <div class="stars">⭐⭐⭐⭐⭐</div>
-                <div class="review-text">"Desde que lo probé no compro otro."</div>
+                <div class="review-text">"Desde que lo probé el sistema retornable no compro otro. Sano para mí y genial para el planeta."</div>
             </div>
         </div>
     </section>
 
     <!-- SECCIÓN REDES SOCIALES -->
     <section class="section">
-        <h2>Seguinos en redes</h2>
+        <h2>Seguinos en nuestras comunidades</h2>
         <a class="btn instagram" href="https://instagram.com/yogur.griego.junin" target="_blank">Ver Instagram</a>
         <a class="btn facebook" href="https://www.facebook.com/profile.php?id=61566835996718" target="_blank">Ver Facebook</a>
     </section>
 </main>
 
-<footer>📍 Junín, Provincia de Buenos Aires — Producción artesanal diaria</footer>
+<footer>📍 Junín, Provincia de Buenos Aires — Producción y Entrega Artesanal Diaria</footer>
 
 <!-- BOTÓN FLOTANTE -->
-<a class="whatsapp-float" href="https://wa.me/5492364206562?text=Hola%20quiero%20hacer%20mi%20pedido%20de%20Yogur%20Griego" target="_blank" aria-label="Enviar mensaje por WhatsApp">
+<a class="whatsapp-float" href="https://wa.me/5492364206562?text=Hola%20quiero%20hacer%20un%20pedido%20de%20Yogur%20Griego" target="_blank" aria-label="Enviar mensaje por WhatsApp">
     <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
 </a>
 
