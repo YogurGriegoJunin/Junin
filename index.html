@@ -20,6 +20,7 @@
             --texto-principal: #1a1a1a;
             --texto-secundario: #333333;
             --oro: #ffbc00;
+            --ocre: #b57c1e;
         }
         
         * { box-sizing: border-box; }
@@ -78,7 +79,7 @@
         .card-content { padding: 25px; }
         .card h3 { margin: 0 0 8px 0; font-size: 22px; color: var(--texto-principal); font-weight: bold; }
         
-        /* Precios con efecto anclaje (Antes vs Ahora) */
+        /* Precios con efecto anclaje */
         .price-container { margin-bottom: 12px; }
         .price-before { font-size: 16px; color: #888; text-decoration: line-through; margin-bottom: 2px; font-weight: 500; }
         .price { font-size: 34px; color: var(--verde); font-weight: bold; line-height: 1; }
@@ -101,12 +102,20 @@
         .btn:hover { opacity: 0.95; transform: scale(1.02); box-shadow: 0 6px 16px rgba(37,211,102,0.3); }
         .whatsapp { background: var(--whatsapp); color: white; }
         
+        /* SECCIÓN TIPS DE INVIERNO */
+        .winter-section { background: #eef3ee; border-radius: 24px; padding: 45px 20px; margin: 20px auto; max-width: 1120px; }
+        .winter-section h2 { color: var(--verde-oscuro); font-size: 28px; margin-top: 0; margin-bottom: 30px; }
+        .winter-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        .winter-card { background: white; width: 320px; padding: 22px; border-radius: 16px; box-shadow: 0 6px 15px rgba(0,0,0,0.04); text-align: left; }
+        .winter-card h3 { margin-top: 0; color: var(--ocre); font-size: 19px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .winter-card p { font-size: 15px; color: var(--texto-secundario); margin: 0; }
+        
         /* BANNER DE COMPROMISO DE CALIDAD */
         .garantia-banner {
             background: linear-gradient(135deg, var(--verde-oscuro), var(--verde));
             color: white;
             padding: 40px 20px;
-            margin: 40px 0;
+            margin: 50px 0;
             border-radius: 0;
             text-align: center;
         }
@@ -158,8 +167,8 @@
         @media(max-width: 680px) {
             header h1 { font-size: 34px; }
             header p { font-size: 17px; }
-            .promos, .benefits-grid, .target-grid { flex-direction: column; align-items: center; }
-            .card, .benefit-card, .target-card { width: 100%; max-width: 360px; }
+            .promos, .benefits-grid, .target-grid, .winter-grid { flex-direction: column; align-items: center; }
+            .card, .benefit-card, .target-card, .winter-card { width: 100%; max-width: 360px; }
         }
     </style>
 </head>
@@ -192,7 +201,7 @@
                 </div>
             </article>
 
-            <!-- Promo 2: Retornables (Con insignia destacada) -->
+            <!-- Promo 2: Retornables -->
             <article class="card">
                 <span class="badge">Ahorro Ecológico</span>
                 <img src="frascos.jpg" alt="Yogur griego artesanal en envases retornables en Junín" loading="lazy">
@@ -209,6 +218,27 @@
                 </div>
             </article>
             
+        </div>
+    </section>
+
+    <!-- NUEVA SECCIÓN: TIPS DE INVIERNO -->
+    <section class="section">
+        <div class="winter-section">
+            <h2>🍂 Ideas Saludables para este Invierno</h2>
+            <div class="winter-grid">
+                <div class="winter-card">
+                    <h3>🥣 Porridge Tibio de Avena</h3>
+                    <p>Cociná avena con leche o agua, endulzá a gusto y, al apagar el fuego, sumale dos cucharadas soperas de yogur griego frío. Le da una cremosidad espectacular y un shot de proteínas para arrancar el día sin frío.</p>
+                </div>
+                <div class="winter-card">
+                    <h3>🍎 Manzanas Tibias con Canela</h3>
+                    <p>Cortá una manzana en cubos, cocinala un toque al microondas o sartén con canela. Servila tibia arriba de una buena base de yogur griego artesanal. Un postre espectacular, reconfortante y sin azúcar.</p>
+                </div>
+                <div class="winter-card">
+                    <h3>🍲 Salsas y Cremas Calientes</h3>
+                    <p>Reemplazá la crema de leche industrial en tus platos. Usalo para darle un toque espeso a tus sopas de calabaza o agregalo directamente sobre tus fideos calientes al momento de servir. ¡Queda increíble!</p>
+                </div>
+            </div>
         </div>
     </section>
 
